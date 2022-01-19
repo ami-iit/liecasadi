@@ -5,8 +5,7 @@
 import dataclasses
 
 import casadi as cs
-
-Vector = cs.MX
+from liecasadi.hints import Vector
 
 
 @dataclasses.dataclass

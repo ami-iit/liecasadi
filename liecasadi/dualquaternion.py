@@ -2,14 +2,10 @@
 # This software may be modified and distributed under the terms of the
 # GNU Lesser General Public License v2.1 or any later version.
 
-
-import dataclasses
-
 import casadi as cs
 
 from liecasadi import Quaternion
-
-Vector = cs.MX
+from liecasadi.hints import Vector
 
 
 class DualQuaternion:
