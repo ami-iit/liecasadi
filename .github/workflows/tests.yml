@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          manba install manifpy
+          mamba install manifpy
           pip install .[test]
       - name: Test with pytest
         run: |
