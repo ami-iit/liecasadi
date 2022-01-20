@@ -1,7 +1,6 @@
 import manifpy
 import numpy as np
 import pytest
-from icecream import ic
 
 from liecasadi import SE3, SO3, SE3Tangent, SO3Tangent
 
