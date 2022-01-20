@@ -1,5 +1,7 @@
 # liecasadi
 
+[![liecasadi](https://github.com/ami-iit/liecasadi/actions/workflows/tests.yml/badge.svg?event=check_run)](https://github.com/ami-iit/liecasadi/actions/workflows/tests.yml)
+
 `liecasadi` implements Lie groups operation written in CasADi, mainly directed to optimization problem formulation.
 
 Inspired by [A micro Lie theory for state estimation in robotics](https://arxiv.org/pdf/1812.01537.pdf) and the library [Manif](https://github.com/artivis/manif).
