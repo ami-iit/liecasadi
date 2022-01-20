@@ -1,6 +1,6 @@
 # liecasadi
 
-[![liecasadi](https://github.com/ami-iit/liecasadi/actions/workflows/tests.yml/badge.svg?event=check_run)](https://github.com/ami-iit/liecasadi/actions/workflows/tests.yml)
+[![liecasadi](https://github.com/ami-iit/liecasadi/actions/workflows/tests.yml/badge.svg)](https://github.com/ami-iit/liecasadi/actions/workflows/tests.yml)
 
 `liecasadi` implements Lie groups operation written in CasADi, mainly directed to optimization problem formulation.
 
