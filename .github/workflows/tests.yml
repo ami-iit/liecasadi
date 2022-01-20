@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
     defaults:
       run:
         shell: bash -l {0}
@@ -15,13 +15,14 @@ jobs:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          mamba-version: "*"
+          auto-activate-base: true
+          activate-environment: ""
           channels: conda-forge
           channel-priority: true
       - name: Install dependencies
         run: |
-          pip install .[test]
           conda install -y -c conda-forge manifpy
+          pip install .[test]
       - name: Test with pytest
         run: |
           pytest
