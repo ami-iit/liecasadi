@@ -17,9 +17,7 @@ class SE3:
     xyzw: Vector
 
     def __repr__(self) -> str:
-        return "Position: \t {} \nQuaternion: \t {}".format(
-            str(self.pos), str(self.xyzw)
-        )
+        return f"Position: \t {self.pos} \nQuaternion: \t {self.xyzw}"
 
     def from_matrix(H: Matrix) -> "SE3":
         assert H.shape == (4, 4)
@@ -95,7 +93,7 @@ class SE3Tangent(SO3Tangent):
     vec = Vector
 
     def __repr__(self) -> str:
-        return "Tangent vector: {}".format(self.vec)
+        return f"Tangent vector: {self.vec}"
 
     def exp(self):
         assert self.vec.shape in [(6,), (6, 1)]

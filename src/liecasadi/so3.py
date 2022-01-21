@@ -17,7 +17,7 @@ class SO3:
         self.quat = Quaternion(xyzw=xyzw)
 
     def __repr__(self) -> str:
-        return "SO3 quaternion: " + str(self.quat)
+        return f"SO3 quaternion: {self.quat.coeffs()}"
 
     @staticmethod
     def Identity():
@@ -123,9 +123,7 @@ class SO3:
     ):
         repr_types = ["mixed", "body"]
         if representation not in repr_types:
-            raise ValueError(
-                "Invalid representation. Expected are {}".format(repr_types)
-            )
+            raise ValueError(f"Invalid representation. Expected are {repr_types}")
         quat = self.as_quat()
         quat = cs.vertcat(quat[3], quat[0], quat[1], quat[2])
 

@@ -5,6 +5,7 @@
 import dataclasses
 
 import casadi as cs
+
 from liecasadi.hints import Vector
 
 
@@ -13,7 +14,7 @@ class Quaternion:
     xyzw: Vector
 
     def __repr__(self) -> str:
-        return "Quaternion: " + str(self.xyzw)
+        return f"Quaternion: {self.xyzw}"
 
     def __mul__(self, other) -> "Quaternion":
         return Quaternion(xyzw=Quaternion.product(self.xyzw, other.xyzw))

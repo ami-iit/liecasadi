@@ -5,6 +5,9 @@ requires = [
     "setuptools_scm[toml]>=6.0",
 ]
 
+[tool.setuptools_scm]
+local_scheme = "dirty-tag"
+
 [tool.black]
 line-length = 88
 
