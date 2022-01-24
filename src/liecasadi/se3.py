@@ -21,9 +21,8 @@ class SE3:
 
     def from_matrix(H: Matrix) -> "SE3":
         assert H.shape == (4, 4)
-        return SE3(pos=H[:3, 3], xyzw=SO3.from_matrix(H[:3, :3]).as_quat())
+        return SE3(pos=H[:3, 3], xyzw=SO3.from_matrix(H[:3, :3]).as_quat().coeffs())
 
-    @property
     def rotation(self) -> SO3:
         return SO3(self.xyzw)
 
@@ -44,12 +43,12 @@ class SE3:
         return SE3(pos=xyz, xyzw=xyzw)
 
     def from_translation_and_rotation(translation: Vector, rotation: SO3) -> "SE3":
-        return SE3(pos=translation, xyzw=rotation.as_quat())
+        return SE3(pos=translation, xyzw=rotation.as_quat().coeffs())
 
     def inverse(self) -> "SE3":
         return SE3(
             pos=-SO3(self.xyzw).inverse().act(self.pos),
-            xyzw=SO3(self.xyzw).transpose().as_quat(),
+            xyzw=SO3(self.xyzw).transpose().as_quat().coeffs(),
         )
 
     def log(self) -> "SE3Tangent":
@@ -68,12 +67,12 @@ class SE3:
     def __mul__(self, other):
         rotation = SO3(self.xyzw) * SO3(other.xyzw)
         position = self.pos + SO3(self.xyzw).act(other.pos)
-        return SE3(pos=position, xyzw=rotation.as_quat())
+        return SE3(pos=position, xyzw=rotation.as_quat().coeffs())
 
     def __rmul__(self, other):
         rotation = SO3(other.xyzw) @ SO3(self.xyzw)
         position = other.pos + SO3(other.xyzw).act(self.pos)
-        return SE3(pos=position, xyzw=rotation.as_quat())
+        return SE3(pos=position, xyzw=rotation.as_quat().coeffs())
 
     def __sub__(self, other) -> "SE3Tangent":
         if type(self) is type(other):
@@ -109,7 +108,7 @@ class SE3Tangent(SO3Tangent):
         )
         trans = V @ vec[:3]
         # trans = SO3.from_matrix(V).act(vec[:3])
-        return SE3(pos=trans, xyzw=rot.as_quat())
+        return SE3(pos=trans, xyzw=rot.as_quat().coeffs())
 
     def vector(self):
         return self.vec
