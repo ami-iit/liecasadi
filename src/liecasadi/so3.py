@@ -6,15 +6,19 @@ import dataclasses
 
 import casadi as cs
 import numpy as np
+from attr import field
 
 from liecasadi import Quaternion
 from liecasadi.hints import Angle, Matrix, TangentVector, Vector
 
 
+@dataclasses.dataclass
 class SO3:
-    def __init__(self, xyzw) -> "SO3":
-        self.xyzw = xyzw
-        self.quat = Quaternion(xyzw=xyzw)
+    xyzw: Vector
+    quat: Quaternion = field(init=False)
+
+    def __post_init__(self) -> "SO3":
+        self.quat = Quaternion(xyzw=self.xyzw)
 
     def __repr__(self) -> str:
         return f"SO3 quaternion: {self.quat.coeffs()}"
@@ -44,7 +48,7 @@ class SO3:
         return SO3(xyzw=cs.vertcat(qx, qy, qz, qw))
 
     def as_quat(self) -> Quaternion:
-        return self.quat.coeffs()
+        return self.quat
 
     def as_matrix(self) -> Matrix:
         return (
@@ -124,7 +128,7 @@ class SO3:
         repr_types = ["spatial", "body"]
         if representation not in repr_types:
             raise ValueError(f"Invalid representation. Expected are {repr_types}")
-        quat = self.as_quat()
+        quat = self.as_quat().coeffs()
         quat = cs.vertcat(quat[3], quat[0], quat[1], quat[2])
 
         def _exp(o):
