@@ -72,3 +72,7 @@ vector6d = (np.random.rand(3) - 0.5) * 5
 # Create SE3Tangent object
 tangent = SO3Tangent(vector6d)
 ```
+
+## Work in progress
+
+- Dual Quaternion class
