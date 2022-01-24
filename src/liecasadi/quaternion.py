@@ -6,7 +6,7 @@ import dataclasses
 
 import casadi as cs
 
-from liecasadi.hints import Vector
+from liecasadi.hints import Scalar, Vector
 
 
 @dataclasses.dataclass
@@ -16,26 +16,41 @@ class Quaternion:
     def __repr__(self) -> str:
         return f"Quaternion: {self.xyzw}"
 
-    def __mul__(self, other) -> "Quaternion":
+    def __str__(self) -> str:
+        return str(self.xyzw)
+
+    def __mul__(self, other: "Quaternion") -> "Quaternion":
         return Quaternion(xyzw=Quaternion.product(self.xyzw, other.xyzw))
 
-    def __rmul__(self, other) -> "Quaternion":
-        return Quaternion(xyzw=Quaternion.product(other.xyzw, self.xyzw))
+    def __rmul__(self, other: Scalar) -> "Quaternion":
+        """Multiplication with  a scalar
 
-    def __add__(self, other: "Quaternion"):
+        Returns:
+            Quaternion
+        """
+        return Quaternion(xyzw=other * self.xyzw)
+
+    def __add__(self, other: "Quaternion") -> "Quaternion":
         return Quaternion(xyzw=self.xyzw + other.xyzw)
 
-    def __radd__(self, other: "Quaternion"):
+    def __radd__(self, other: "Quaternion") -> "Quaternion":
         return Quaternion(xyzw=self.xyzw + other.xyzw)
 
-    def __sub__(self, other: "Quaternion"):
+    def __sub__(self, other: "Quaternion") -> "Quaternion":
         return Quaternion(xyzw=self.xyzw - other.xyzw)
 
-    def __rsub__(self, other: "Quaternion"):
+    def __neg__(self) -> "Quaternion":
+        return Quaternion(xyzw=-self.xyzw)
+
+    def __rsub__(self, other: "Quaternion") -> "Quaternion":
         return Quaternion(xyzw=self.xyzw - other.xyzw)
 
-    def conjugate(self):
+    def conjugate(self) -> "Quaternion":
         return Quaternion(xyzw=cs.vertcat(-self.xyzw[:3], self.xyzw[3]))
+
+    def normalize(self) -> "Quaternion":
+        xyzw_n = self.xyzw / cs.norm_2(self.xyzw)
+        return Quaternion(xyzw=xyzw_n)
 
     @staticmethod
     def product(q1: Vector, q2: Vector) -> Vector:
@@ -50,17 +65,17 @@ class Quaternion:
         return self.xyzw
 
     @property
-    def x(self):
+    def x(self) -> float:
         return self.xyzw[0]
 
     @property
-    def y(self):
+    def y(self) -> float:
         return self.xyzw[1]
 
     @property
-    def z(self):
+    def z(self) -> float:
         return self.xyzw[2]
 
     @property
-    def w(self):
+    def w(self) -> float:
         return self.xyzw[3]
