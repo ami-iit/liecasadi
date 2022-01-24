@@ -107,21 +107,21 @@ class SO3:
 
     @staticmethod
     def _quat_dot_map(d_omega: Vector, representation: str):
-        # if d_omega in mixed representation
+        # if d_omega in spatial representation
         A = 0.5 * cs.vertcat(
             cs.horzcat(0, -d_omega[0], -d_omega[1], -d_omega[2]),
             cs.horzcat(d_omega[0], 0, d_omega[2], -d_omega[1]),
             cs.horzcat(d_omega[1], -d_omega[2], 0, d_omega[0]),
             cs.horzcat(d_omega[2], d_omega[1], -d_omega[0], 0),
         )
-        if representation == "mixed":
+        if representation == "spatial":
             A[1:, 1:] = A[1:, 1:].T
         return A
 
     def add_integrated_velocity(
-        self, d_omega: Vector, representation: str = ["mixed", "body"]
+        self, d_omega: Vector, representation: str = ["spatial", "body"]
     ):
-        repr_types = ["mixed", "body"]
+        repr_types = ["spatial", "body"]
         if representation not in repr_types:
             raise ValueError(f"Invalid representation. Expected are {repr_types}")
         quat = self.as_quat()
