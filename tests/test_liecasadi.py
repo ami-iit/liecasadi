@@ -21,13 +21,14 @@ manifSO3Tang = manifpy.SO3Tangent(angle)
 
 
 def test_SO3():
-    assert quat - mySO3.as_quat() == pytest.approx(0.0, abs=1e-4)
+    assert quat - mySO3.as_quat().coeffs() == pytest.approx(0.0, abs=1e-4)
     assert mySO3.as_matrix() - manifSO3.rotation() == pytest.approx(0.0, abs=1e-4)
 
 
 def test_exp():
-    assert mySO3Tang.exp().as_quat() - manifSO3Tang.exp().quat() == pytest.approx(
-        0.0, abs=1e-4
+    assert (
+        mySO3Tang.exp().as_quat().coeffs() - manifSO3Tang.exp().quat()
+        == pytest.approx(0.0, abs=1e-4)
     )
 
 
