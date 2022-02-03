@@ -3,6 +3,7 @@
 # GNU Lesser General Public License v2.1 or any later version.
 
 import dataclasses
+import warnings
 from dataclasses import field
 
 import casadi as cs
@@ -19,6 +20,7 @@ class DualQuaternion:
     Qd: Quaternion = field(init=False)
 
     def __post_init__(self):
+        warnings.warn("[DualQuaternion]: This class is under development!")
         self.Qr = Quaternion(self.qr)
         self.Qd = Quaternion(self.qd)
 

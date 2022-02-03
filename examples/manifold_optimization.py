@@ -1,5 +1,3 @@
-from timeit import repeat
-
 import casadi as cs
 import matplotlib.pyplot as plt
 import numpy as np
