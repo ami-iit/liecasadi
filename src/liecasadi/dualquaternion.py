@@ -2,12 +2,12 @@
 # This software may be modified and distributed under the terms of the
 # GNU Lesser General Public License v2.1 or any later version.
 
-from curses.ascii import SO
 import dataclasses
-from attr import field
+from dataclasses import field
+
 import casadi as cs
 
-from liecasadi import Quaternion, SO3, SE3
+from liecasadi import SE3, SO3, Quaternion
 from liecasadi.hints import Matrix, Scalar, Vector
 
 

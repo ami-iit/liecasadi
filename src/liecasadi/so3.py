@@ -3,10 +3,10 @@
 # GNU Lesser General Public License v2.1 or any later version.
 
 import dataclasses
+from dataclasses import field
 
 import casadi as cs
 import numpy as np
-from attr import field
 
 from liecasadi import Quaternion
 from liecasadi.hints import Angle, Matrix, TangentVector, Vector
