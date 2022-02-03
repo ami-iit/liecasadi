@@ -18,13 +18,13 @@ dt = 0.01
 for k in range(N):
     vector_SO3 = SO3Tangent(vel[k] * dt)
     rotation_SO3 = SO3(quat[k])
-    opti.subject_to(quat[k + 1] == (vector_SO3 + rotation_SO3).as_quat())
+    opti.subject_to(quat[k + 1] == (vector_SO3 + rotation_SO3).as_quat().coeffs())
 
 
 C = sum(cs.sumsqr(vel[i]) for i in range(N))
 
 # Initial rotation and velocity
-opti.subject_to(quat[0] == SO3.Identity().as_quat())
+opti.subject_to(quat[0] == SO3.Identity().as_quat().coeffs())
 opti.subject_to(vel[0] == 0)
 
 # Set random initial guess
@@ -39,15 +39,9 @@ for k in range(N):
 opti.subject_to(vel[N - 1] == 0)
 final_delta_increment = SO3Tangent([cs.pi / 3, cs.pi / 6, cs.pi / 2])
 
-opti.subject_to(quat[N] == (final_delta_increment + SO3.Identity()).as_quat())
+opti.subject_to(quat[N] == (final_delta_increment + SO3.Identity()).as_quat().coeffs())
 
 opti.minimize(C)
-optiSettings = {}
-solvSettings = {
-    "linear_solver": "ma27",
-    "tol": 0.0001,
-    "acceptable_tol": 0.0001,
-}
 
 opti.solver("ipopt")
 try:
