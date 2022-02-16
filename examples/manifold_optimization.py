@@ -6,12 +6,15 @@ from mpl_toolkits import mplot3d
 
 from liecasadi import SO3, SO3Tangent
 
-N = 25
 opti = cs.Opti()
+
+T = opti.variable(1)
+N = 100
 
 quat = [opti.variable(4, 1) for _ in range(N + 1)]
 vel = [opti.variable(3, 1) for _ in range(N + 1)]
-dt = 0.01
+dt = T / N
+
 
 for k in range(N):
     vector_SO3 = SO3Tangent(vel[k] * dt)
@@ -19,11 +22,12 @@ for k in range(N):
     opti.subject_to(quat[k + 1] == (vector_SO3 + rotation_SO3).as_quat().coeffs())
 
 
-C = sum(cs.sumsqr(vel[i]) for i in range(N))
+C = sum(cs.sumsqr(vel[i]) for i in range(N)) + T
 
 # Initial rotation and velocity
 opti.subject_to(quat[0] == SO3.Identity().as_quat().coeffs())
 opti.subject_to(vel[0] == 0)
+opti.subject_to(opti.bounded(0, T, 10))
 
 # Set random initial guess
 quat_rnd = np.random.randn(4, 1)
@@ -55,9 +59,10 @@ plt.spy(opti.debug.value(cs.jacobian(opti.g, opti.x)))
 
 x = [sol.value(quat[i]) for i in range(N + 1)]
 v = [sol.value(vel[i]) for i in range(N)]
+time = sol.value(T)
 plt.figure()
 plt.suptitle("Velocity")
-plt.plot(v)
+plt.plot(np.linspace(0, time, N), v)
 
 figure = plt.figure()
 axes = mplot3d.Axes3D(figure)
