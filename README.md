@@ -9,7 +9,7 @@ Inspired by [A micro Lie theory for state estimation in robotics](https://arxiv.
 ## Install
 
 ```
-pip install "liecasadi @ git+https://github.com/ami-iit/lie-casadi.git"
+pip install --no-deps "liecasadi @ git+https://github.com/ami-iit/lie-casadi.git"
 ```
 
 ## Implemented Groups
