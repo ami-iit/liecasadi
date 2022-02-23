@@ -62,15 +62,15 @@ class SO3:
 
     @staticmethod
     def qx(q: Angle) -> "SO3":
-        return SO3(xyzw=cs.vertcat(cs.cos(q / 2), cs.sin(q / 2), 0, 0))
+        return SO3(xyzw=cs.vertcat(cs.sin(q / 2), 0, 0, cs.cos(q / 2)))
 
     @staticmethod
     def qy(q: Angle) -> "SO3":
-        return SO3(xyzw=cs.vertcat(cs.cos(q / 2), 0, cs.sin(q / 2), 0))
+        return SO3(xyzw=cs.vertcat(0, cs.sin(q / 2), 0, cs.cos(q / 2)))
 
     @staticmethod
     def qz(q: Angle) -> "SO3":
-        return SO3(xyzw=cs.vertcat(cs.cos(q / 2), 0, 0, cs.sin(q / 2)))
+        return SO3(xyzw=cs.vertcat(0, 0, cs.sin(q / 2), cs.cos(q / 2)))
 
     def inverse(self) -> "SO3":
         return SO3(xyzw=self.quat.conjugate().coeffs())
