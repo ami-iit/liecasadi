@@ -1,1 +1,0 @@
-from liecasadi import Quaternion
