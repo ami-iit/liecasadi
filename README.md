@@ -6,10 +6,26 @@
 
 Inspired by [A micro Lie theory for state estimation in robotics](https://arxiv.org/pdf/1812.01537.pdf) and the library [Manif](https://github.com/artivis/manif).
 
-## Install
+## 🐍 Install
 
+Create a [virtual environment](https://docs.python.org/3/library/venv.html#venv-def), if you prefer. For example:
+
+```bash
+pip install virtualenv
+python3 -m venv your_virtual_env
+source your_virtual_env/bin/activate
 ```
-pip install --no-deps "liecasadi @ git+https://github.com/ami-iit/lie-casadi.git"
+
+Inside the virtual environment, install the library from pip:
+
+```bash
+pip install liecasadi
+```
+
+If you want the last version:
+
+```bash
+pip install "liecasadi @ git+https://github.com/ami-iit/lie-casadi.git"
 ```
 
 ## Implemented Groups
@@ -19,13 +35,13 @@ pip install --no-deps "liecasadi @ git+https://github.com/ami-iit/lie-casadi.git
 | SO3       | 3D Rotations       |
 | SE3       | 3D Rigid Transform |
 
-### Operations
+### 🚀 Operations
 
 Being:
 
 - $X, Y \in SO3, \ SE3$
 
-- $w \in SO3Tangent, \ SE3Tangent$
+- $w \in \text{SO3Tangent}, \ \text{SE3Tangent}$
 
 - $v \in \mathbb{R}^3$
 
@@ -40,7 +56,7 @@ Being:
 | Manifold left plus  | $w \oplus X = \text{exp}(w) \circ X$  |   `phi + X`   |
 | Manifold minus      |  $X-Y = \text{log}(Y^{-1} \circ X)$   |     `X-Y`     |
 
-## Example
+## 🦸‍♂️ Example
 
 ```python
 from liecasadi import SE3, SO3, SE3Tangent, SO3Tangent
@@ -73,6 +89,12 @@ vector6d = (np.random.rand(3) - 0.5) * 5
 tangent = SO3Tangent(vector6d)
 ```
 
-## Work in progress
+## 🦸‍♂️ Contributing
+
+**liecasadi** is an open-source project. Contributions are very welcome!
+
+Open an issue with your feature request or if you spot a bug. Then, you can also proceed with a Pull-requests! :rocket:
+
+## ⚠️ Work in progress
 
 - Dual Quaternion class
