@@ -1,3 +1,9 @@
+# Please note that for running this example you need to install `matplotlib` and `scipy`.
+# You can do this by running the following command in your terminal:
+# pip install matplotlib scipy
+# If you are using anaconda, you can also run the following command:
+# conda install matplotlib scipy
+
 import casadi as cs
 import matplotlib.pyplot as plt
 import numpy as np
