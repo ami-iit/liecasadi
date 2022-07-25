@@ -109,15 +109,33 @@ class SO3:
         else:
             raise RuntimeError("[SO3: __add__] Hey! Someone is not a Lie element.")
 
-    @staticmethod
-    def _quat_dot_map(d_omega: Vector, representation: str):
-        # if d_omega in spatial representation
-        A = 0.5 * cs.vertcat(
-            cs.horzcat(0, -d_omega[0], -d_omega[1], -d_omega[2]),
+    def quaternion_derivative(
+        self,
+        omega: Vector,
+        omega_in_body_fixed: bool = False,
+        baumgarte_coefficient: float = None,
     ):
 
-        quat = _exp(d_omega) * quat
-        return SO3(xyzw=cs.vertcat(quat[1], quat[2], quat[3], quat[0]))
+        if baumgarte_coefficient is not None:
+            baumgarte_term = (
+                baumgarte_coefficient
+                * cs.norm_2(omega)
+                * (1 - cs.norm_2(self.as_quat().coeffs()))
+            )
+            _omega = Quaternion(
+                cs.vertcat(
+                    omega,
+                    baumgarte_term,
+                )
+            )
+        else:
+            _omega = Quaternion(cs.vertcat(omega, 0))
+        # using the quaternion product formula
+        return (
+            0.5 * self.as_quat() * _omega
+            if omega_in_body_fixed
+            else 0.5 * _omega * self.as_quat()
+        ).coeffs()
 
     @staticmethod
     def product(q1: Quaternion, q2: Quaternion) -> Quaternion:
@@ -131,7 +149,7 @@ class SO3Tangent:
     vec: TangentVector
 
     def __repr__(self) -> str:
-        return "SO3Tangent vector:" + str(self.vec)
+        return f"SO3Tangent vector:{str(self.vec)}"
 
     def exp(self) -> SO3:
         theta = cs.norm_2(self.vec + cs.np.finfo(np.float64).eps)
