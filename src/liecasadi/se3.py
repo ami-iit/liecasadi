@@ -19,6 +19,7 @@ class SE3:
     def __repr__(self) -> str:
         return f"Position: \t {self.pos} \nQuaternion: \t {self.xyzw}"
 
+    @staticmethod
     def from_matrix(H: Matrix) -> "SE3":
         assert H.shape == (4, 4)
         return SE3(pos=H[:3, 3], xyzw=SO3.from_matrix(H[:3, :3]).as_quat().coeffs())
@@ -37,11 +38,13 @@ class SE3:
             cs.horzcat([0, 0, 0, 1]).T,
         )
 
+    @staticmethod
     def from_position_quaternion(xyz: Vector, xyzw: Vector) -> "SE3":
         assert xyz.shape in [(3,), (3, 1)]
         assert xyzw.shape in [(4,), (4, 1)]
         return SE3(pos=xyz, xyzw=xyzw)
 
+    @staticmethod
     def from_translation_and_rotation(translation: Vector, rotation: SO3) -> "SE3":
         return SE3(pos=translation, xyzw=rotation.as_quat().coeffs())
 
@@ -107,7 +110,6 @@ class SE3Tangent(SO3Tangent):
             + (theta_eps - cs.sin(theta_eps)) / theta_eps @ cs.skew(u) @ cs.skew(u)
         )
         trans = V @ vec[:3]
-        # trans = SO3.from_matrix(V).act(vec[:3])
         return SE3(pos=trans, xyzw=rot.as_quat().coeffs())
 
     def vector(self):
