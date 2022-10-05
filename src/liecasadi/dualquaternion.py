@@ -28,6 +28,14 @@ class DualQuaternion:
         return f"Rotation quaternion: {self.Qr.xyzw} \nTranslation quaternion: {self.Qd.coeffs()}"
 
     def __mul__(self, other: "DualQuaternion") -> "DualQuaternion":
+        """Dual quaternion multiplication
+
+        Args:
+            other (DualQuaternion): a Dual Quaternion
+
+        Returns:
+            DualQuaternion: the multiplication product
+        """
         qr = self.Qr * other.Qr
         qd = self.Qr * other.Qd + self.Qd * other.Qr
         return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
@@ -39,6 +47,19 @@ class DualQuaternion:
             Dual Quaternion
         """
         return DualQuaternion(qr=other * self.qr, qd=other * self.qd)
+
+    def __sum__(self, other: "DualQuaternion") -> "DualQuaternion":
+        """Sum of 2 Dual quaternions
+
+        Args:
+            other (DualQuaternion): a Dual Quaternion
+
+        Returns:
+            DualQuaternion: the sum of Dual Quaternions
+        """
+        qr = self.Qr + self.Qr
+        qd = self.Qd + self.Qd
+        return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
     @staticmethod
     def from_quaternion_and_translation(
@@ -52,13 +73,13 @@ class DualQuaternion:
     @staticmethod
     def from_matrix(m: Matrix) -> "DualQuaternion":
         se3 = SE3.from_matrix(m)
-        t = se3.rotation().as_quat()
-        r = Quaternion(cs.vertcat(se3.translation(), 0))
+        r = se3.rotation().as_quat()
+        t = Quaternion(cs.vertcat(se3.translation(), 0))
         qd = 0.5 * (t * r).coeffs()
         return DualQuaternion(qr=r.coeffs(), qd=qd)
 
     def translation(self) -> Vector:
-        return 2.0 * (self.Qd * self.Qr.conjugate()).coeff()
+        return 2.0 * (self.Qd * self.Qr.conjugate()).coeffs()
 
     def rotation(self) -> SO3:
         return SO3(xyzw=self.Qr.coeffs())
@@ -66,10 +87,12 @@ class DualQuaternion:
     def inverse(self) -> "DualQuaternion":
         qr_inv = self.Qr.conjugate()
         qd = -qr_inv * self.Qd * qr_inv
-        return DualQuaternion(qr=qr_inv, qd=qd)
+        return DualQuaternion(qr=qr_inv.coeffs(), qd=qd.coeffs())
 
-    def translation(self):
-        return 2 * (self.Qd * self.Qr.conjugate()).coeffs()
+    def conjugate(self):
+        qr = self.Qr.conjugate()
+        qd = self.Qd.conjugate()
+        return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
 
 if __name__ == "__main__":
@@ -90,5 +113,5 @@ if __name__ == "__main__":
 
     d3 = DualQuaternion.from_matrix(np.eye(4))
 
-    print((3 * dq2).inverse())
-    print(dq.translation())
+    # print((3 * dq2).inverse())
+    # print(dq.translation())
