@@ -48,7 +48,7 @@ class DualQuaternion:
         """
         return DualQuaternion(qr=other * self.qr, qd=other * self.qd)
 
-    def __sum__(self, other: "DualQuaternion") -> "DualQuaternion":
+    def __add__(self, other: "DualQuaternion") -> "DualQuaternion":
         """Sum of 2 Dual quaternions
 
         Args:
@@ -59,6 +59,19 @@ class DualQuaternion:
         """
         qr = self.Qr + self.Qr
         qd = self.Qd + self.Qd
+        return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
+
+    def __sub__(self, other: "DualQuaternion") -> "DualQuaternion":
+        """Difference of 2 Dual quaternions
+
+        Args:
+            other (DualQuaternion): a Dual Quaternion
+
+        Returns:
+            DualQuaternion: the difference of Dual Quaternions
+        """
+        qr = self.Qr - self.Qr
+        qd = self.Qd - self.Qd
         return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
     @staticmethod
@@ -94,24 +107,12 @@ class DualQuaternion:
         qd = self.Qd.conjugate()
         return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
+    def as_matrix(self):
+        r = self.rotation().as_matrix()
+        t = self.translation()
 
-if __name__ == "__main__":
-    import numpy as np
-
-    quat = np.random.randn(4) * 4
-    quat = quat / np.linalg.norm(quat)
-
-    trans = np.random.randn(3) * 4
-    dq = DualQuaternion.from_quaternion_and_translation(quat, trans)
-
-    quat2 = np.random.randn(4) * 4
-    quat2 = quat2 / np.linalg.norm(quat2)
-
-    trans2 = np.random.randn(4) * 4
-
-    dq2 = DualQuaternion(quat2, trans2)
-
-    d3 = DualQuaternion.from_matrix(np.eye(4))
-
-    # print((3 * dq2).inverse())
-    # print(dq.translation())
+    @staticmethod
+    def Identity():
+        return DualQuaternion(
+            qr=SO3.Identity().as_quat().coeffs, qd=Quaternion([0, 0, 0, 0])
+        )
