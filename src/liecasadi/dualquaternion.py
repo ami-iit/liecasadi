@@ -16,7 +16,8 @@ from liecasadi.hints import Matrix, Scalar, Vector
 class DualQuaternion:
     """
     Dual Quaternion class
-    Have a look at the document https://cs.gmu.edu/~jmlien/teaching/cs451/uploads/Main/dual-quaternion.pdf for some intuitions.
+    Have a look at the documents https://cs.gmu.edu/~jmlien/teaching/cs451/uploads/Main/dual-quaternion.pdf
+    https://faculty.sites.iastate.edu/jia/files/inline-files/dual-quaternion.pdf for some intuitions.
     """
 
     qr: Vector
@@ -117,12 +118,19 @@ class DualQuaternion:
         qd = 0.5 * (t * r).coeffs()
         return DualQuaternion(qr=r.coeffs(), qd=qd)
 
+    def coeffs(self) -> Vector:
+        """
+        Returns:
+            Vector: the dual quaternion vector xyzwxyz
+        """
+        return cs.vertcat(self.qd, self.qr)
+
     def translation(self) -> Vector:
         """
         Returns:
             Vector: Translation vector xyz
         """
-        return 2.0 * (self.Qd * self.Qr.conjugate()).coeffs()
+        return 2.0 * (self.Qd * self.Qr.conjugate()).coeffs()[:3]
 
     def rotation(self) -> SO3:
         """
@@ -149,6 +157,15 @@ class DualQuaternion:
         qd = self.Qd.conjugate()
         return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
+    def dual_conjugate(self) -> "DualQuaternion":
+        """
+        Returns:
+            DualQuaternion: dual number conjugate, used in point transformation
+        """
+        qr = self.Qr.conjugate()
+        qd = self.Qd.conjugate()
+        return DualQuaternion(qr=qr.coeffs(), qd=-qd.coeffs())
+
     def as_matrix(self) -> Matrix:
         """
         Returns:
@@ -168,5 +185,17 @@ class DualQuaternion:
             DualQuaternion: the identity dual quaternion
         """
         return DualQuaternion(
-            qr=SO3.Identity().as_quat().coeffs, qd=Quaternion([0, 0, 0, 0])
+            qr=SO3.Identity().as_quat().coeffs(), qd=Quaternion([0, 0, 0, 0]).coeffs()
         )
+
+    def transform_point(self, xyz: Vector) -> Vector:
+        """Rototranlates a point
+        Args:
+            xyz (Vector): the point
+
+        Returns:
+            Vector: the transformed point
+        """
+        p = DualQuaternion.Identity()
+        p.Qd = Quaternion([xyz[0], xyz[1], xyz[2], 0])
+        return (self * p * self.dual_conjugate()).coeffs()[:3]
