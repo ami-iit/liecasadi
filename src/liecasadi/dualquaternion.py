@@ -57,8 +57,8 @@ class DualQuaternion:
         Returns:
             DualQuaternion: the sum of Dual Quaternions
         """
-        qr = self.Qr + self.Qr
-        qd = self.Qd + self.Qd
+        qr = self.Qr + other.Qr
+        qd = self.Qd + other.Qd
         return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
     def __sub__(self, other: "DualQuaternion") -> "DualQuaternion":
@@ -70,8 +70,8 @@ class DualQuaternion:
         Returns:
             DualQuaternion: the difference of Dual Quaternions
         """
-        qr = self.Qr - self.Qr
-        qd = self.Qd - self.Qd
+        qr = self.Qr - other.Qr
+        qd = self.Qd - other.Qd
         return DualQuaternion(qr=qr.coeffs(), qd=qd.coeffs())
 
     @staticmethod
