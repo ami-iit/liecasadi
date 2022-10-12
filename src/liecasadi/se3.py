@@ -31,6 +31,9 @@ class SE3:
         return self.pos
 
     def transform(self) -> Matrix:
+        return self.as_matrix()
+
+    def as_matrix(self) -> Matrix:
         a = SO3(self.xyzw)
         pos = cs.reshape(self.pos, -1, 1)
         return cs.vertcat(

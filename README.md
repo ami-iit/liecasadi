@@ -89,12 +89,52 @@ vector6d = (np.random.rand(3) - 0.5) * 5
 tangent = SO3Tangent(vector6d)
 ```
 
+### Dual Quaternion example
+
+```python
+from liecasadi import SE3, DualQuaternion
+from numpy import np
+
+# orientation quaternion generation
+quat1 = (np.random.rand(4) - 0.5) * 5
+quat1 = quat1 / np.linalg.norm(quat1)
+quat2 = (np.random.rand(4) - 0.5) * 5
+quat2 = quat2 / np.linalg.norm(quat2)
+
+# translation vector generation
+pos1 = (np.random.rand(3) - 0.5) * 5
+pos2 = (np.random.rand(3) - 0.5) * 5
+
+dual_quaternion1 = DualQuaternion(quat1, pos1)
+dual_quaternion2 = DualQuaternion(quat2, pos2)
+
+# from a homogenous matrix
+# (using liecasadi.SE3 to generate the corresponding homogenous matrix)
+H = SE3.from_position_quaternion(pos, quat).as_matrix()
+dual_quaternion1 = DualQuaternion.from_matrix(H)
+
+# Concatenation of rigid transforms
+q1xq2 = dual_quaternion1 * dual_quaternion2
+
+# to homogeneous matrix
+print(q1xq2.as_matrix())
+
+# obtain translation
+print(q1xq2.translation())
+
+# obtain rotation
+print(q1xq2.rotation().as_matrix())
+
+# transform a point
+point = np.random.randn(3,1)
+transformed_point = dual_quaternion1.transform_point(point)
+
+# create an identity dual quaternion
+I = DualQuaternion.Identity()
+```
+
 ## 🦸‍♂️ Contributing
 
 **liecasadi** is an open-source project. Contributions are very welcome!
 
 Open an issue with your feature request or if you spot a bug. Then, you can also proceed with a Pull-requests! :rocket:
-
-## ⚠️ Work in progress
-
-- Dual Quaternion class
