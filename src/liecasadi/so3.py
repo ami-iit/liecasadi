@@ -17,7 +17,7 @@ class SO3:
     xyzw: Vector
     quat: Quaternion = field(init=False)
 
-    def __post_init__(self) -> "SO3":
+    def __post_init__(self) -> None:
         self.quat = Quaternion(xyzw=self.xyzw)
 
     def __repr__(self) -> str:
