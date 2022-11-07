@@ -25,6 +25,15 @@ def test_SO3():
     assert mySO3.as_matrix() - manifSO3.rotation() == pytest.approx(0.0, abs=1e-4)
 
 
+def test_euler():
+    from scipy.spatial.transform import Rotation
+
+    rpy = np.random.randn(3) * np.pi
+    assert SO3.from_euler(rpy).as_matrix() - Rotation.from_euler(
+        "xyz", rpy
+    ).as_matrix() == pytest.approx(0.0, abs=1e-4)
+
+
 def test_exp():
     assert (
         mySO3Tang.exp().as_quat().coeffs() - manifSO3Tang.exp().quat()
