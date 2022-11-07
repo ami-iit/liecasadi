@@ -33,7 +33,7 @@ class SO3:
         return SO3(xyzw=xyzw)
 
     @staticmethod
-    def from_angles(rpy: Vector) -> "SO3":
+    def from_euler(rpy: Vector) -> "SO3":
         assert rpy.shape == (3,) or (3, 1)
         return SO3.q_from_rpy(rpy)
 
@@ -57,8 +57,15 @@ class SO3:
             + 2 * cs.mpower(cs.skew(self.quat.coeffs()[:3]), 2)
         )
 
-    def as_euler(self):
-        raise NotImplementedError
+    def as_euler(self) -> Vector:
+        qx = self.xyzw[0]
+        qy = self.xyzw[1]
+        qz = self.xyzw[2]
+        qw = self.xyzw[3]
+        roll = cs.arctan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+        pitch = cs.arcsin(2 * (qw * qy - qz * qx))
+        yaw = cs.arctan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+        return cs.vertcat(roll, pitch, yaw)
 
     @staticmethod
     def qx(q: Angle) -> "SO3":
