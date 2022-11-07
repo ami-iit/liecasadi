@@ -79,10 +79,6 @@ class SO3:
         return SO3(xyzw=cs.vertcat(-self.quat.coeffs()[:3], self.quat.coeffs()[3]))
 
     @staticmethod
-    def R_from_rpy(rpy) -> "SO3":
-        return SO3.Rz(rpy[2]) * SO3.Ry(rpy[1]) * SO3.Rx(rpy[0])
-
-    @staticmethod
     def q_from_rpy(rpy) -> "SO3":
         return SO3.qz(rpy[2]) * SO3.qy(rpy[1]) * SO3.qx(rpy[0])
 
@@ -138,7 +134,7 @@ class SO3:
         ).coeffs()
 
     @staticmethod
-    def product(q1: Quaternion, q2: Quaternion) -> Quaternion:
+    def product(q1: Vector, q2: Vector) -> Vector:
         p1 = q1[3] * q2[3] - cs.dot(q1[:3], q2[:3])
         p2 = q1[3] * q2[:3] + q2[3] * q1[:3] + cs.cross(q1[:3], q2[:3])
         return cs.vertcat(p2, p1)
