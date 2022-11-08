@@ -4,6 +4,7 @@
 
 import dataclasses
 from dataclasses import field
+from typing import Union
 
 import casadi as cs
 import numpy as np
@@ -113,7 +114,7 @@ class SO3:
         self,
         omega: Vector,
         omega_in_body_fixed: bool = False,
-        baumgarte_coefficient: float = None,
+        baumgarte_coefficient: Union[float, None] = None,
     ):
 
         if baumgarte_coefficient is not None:
