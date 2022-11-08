@@ -58,10 +58,7 @@ class SO3:
         )
 
     def as_euler(self) -> Vector:
-        qx = self.xyzw[0]
-        qy = self.xyzw[1]
-        qz = self.xyzw[2]
-        qw = self.xyzw[3]
+        [qx, qy, qz, qw] = [self.xyzw[0], self.xyzw[1], self.xyzw[2], self.xyzw[3]]
         roll = cs.arctan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
         pitch = cs.arcsin(2 * (qw * qy - qz * qx))
         yaw = cs.arctan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
