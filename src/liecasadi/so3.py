@@ -4,6 +4,7 @@
 
 import dataclasses
 from dataclasses import field
+from typing import Union
 
 import casadi as cs
 import numpy as np
@@ -17,7 +18,7 @@ class SO3:
     xyzw: Vector
     quat: Quaternion = field(init=False)
 
-    def __post_init__(self) -> "SO3":
+    def __post_init__(self) -> None:
         self.quat = Quaternion(xyzw=self.xyzw)
 
     def __repr__(self) -> str:
@@ -33,7 +34,7 @@ class SO3:
         return SO3(xyzw=xyzw)
 
     @staticmethod
-    def from_angles(rpy: Vector) -> "SO3":
+    def from_euler(rpy: Vector) -> "SO3":
         assert rpy.shape == (3,) or (3, 1)
         return SO3.q_from_rpy(rpy)
 
@@ -57,8 +58,12 @@ class SO3:
             + 2 * cs.mpower(cs.skew(self.quat.coeffs()[:3]), 2)
         )
 
-    def as_euler(self):
-        raise NotImplementedError
+    def as_euler(self) -> Vector:
+        [qx, qy, qz, qw] = [self.xyzw[0], self.xyzw[1], self.xyzw[2], self.xyzw[3]]
+        roll = cs.arctan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+        pitch = cs.arcsin(2 * (qw * qy - qz * qx))
+        yaw = cs.arctan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+        return cs.vertcat(roll, pitch, yaw)
 
     @staticmethod
     def qx(q: Angle) -> "SO3":
@@ -77,10 +82,6 @@ class SO3:
 
     def transpose(self) -> "SO3":
         return SO3(xyzw=cs.vertcat(-self.quat.coeffs()[:3], self.quat.coeffs()[3]))
-
-    @staticmethod
-    def R_from_rpy(rpy) -> "SO3":
-        return SO3.Rz(rpy[2]) * SO3.Ry(rpy[1]) * SO3.Rx(rpy[0])
 
     @staticmethod
     def q_from_rpy(rpy) -> "SO3":
@@ -113,7 +114,7 @@ class SO3:
         self,
         omega: Vector,
         omega_in_body_fixed: bool = False,
-        baumgarte_coefficient: float = None,
+        baumgarte_coefficient: Union[float, None] = None,
     ):
 
         if baumgarte_coefficient is not None:
@@ -138,7 +139,7 @@ class SO3:
         ).coeffs()
 
     @staticmethod
-    def product(q1: Quaternion, q2: Quaternion) -> Quaternion:
+    def product(q1: Vector, q2: Vector) -> Vector:
         p1 = q1[3] * q2[3] - cs.dot(q1[:3], q2[:3])
         p2 = q1[3] * q2[:3] + q2[3] * q1[:3] + cs.cross(q1[:3], q2[:3])
         return cs.vertcat(p2, p1)
