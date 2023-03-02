@@ -3,6 +3,7 @@
 # GNU Lesser General Public License v2.1 or any later version.
 
 import dataclasses
+from typing import List
 
 import casadi as cs
 
@@ -45,6 +46,9 @@ class Quaternion:
     def __rsub__(self, other: "Quaternion") -> "Quaternion":
         return Quaternion(xyzw=self.xyzw - other.xyzw)
 
+    def __truediv__(self, other: Scalar) -> "Quaternion":
+        return Quaternion(xyzw=self.xyzw / other)
+
     def conjugate(self) -> "Quaternion":
         return Quaternion(xyzw=cs.vertcat(-self.xyzw[:3], self.xyzw[3]))
 
@@ -79,3 +83,40 @@ class Quaternion:
     @property
     def w(self) -> float:
         return self.xyzw[3]
+
+    def inverse(self):
+        return self.conjugate() / cs.dot(self.xyzw, self.xyzw)
+
+    @staticmethod
+    def slerp(q1: "Quaternion", q2: "Quaternion", n: Scalar) -> List[Vector]:
+        """Spherical linear interpolation between two quaternions
+        check https://en.wikipedia.org/wiki/Slerp for more details
+
+        Args:
+            q1 (Quaternion): First quaternion
+            q2 (Quaternion): Second quaternion
+            n (Scalar): Number of interpolation steps
+
+        Returns:
+            Quaternion: Interpolated quaternion
+        """
+        q1 = q1.coeffs()
+        q2 = q2.coeffs()
+        return [Quaternion.slerp_step(q1, q2, t) for t in cs.np.linspace(0, 1, n + 1)]
+
+    @staticmethod
+    def slerp_step(q1: Vector, q2: Vector, t: Scalar) -> Vector:
+        """Step for the splerp function
+
+        Args:
+            q1 (Vector): First quaternion
+            q2 (Vector): Second quaternion
+            t (Scalar): Interpolation parameter
+
+        Returns:
+            Vector: Interpolated quaternion
+        """
+
+        dot = cs.dot(q1, q2)
+        angle = cs.acos(dot)
+        return (cs.sin((1.0 - t) * angle) * q1 + cs.sin(t * angle) * q2) / cs.sin(angle)
