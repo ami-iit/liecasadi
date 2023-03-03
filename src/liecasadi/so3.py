@@ -4,7 +4,7 @@
 
 import dataclasses
 from dataclasses import field
-from typing import Union
+from typing import Union, List
 
 import casadi as cs
 import numpy as np
@@ -116,7 +116,6 @@ class SO3:
         omega_in_body_fixed: bool = False,
         baumgarte_coefficient: Union[float, None] = None,
     ):
-
         if baumgarte_coefficient is not None:
             baumgarte_term = (
                 baumgarte_coefficient
@@ -139,10 +138,22 @@ class SO3:
         ).coeffs()
 
     @staticmethod
-    def product(q1: Vector, q2: Vector) -> Vector:
-        p1 = q1[3] * q2[3] - cs.dot(q1[:3], q2[:3])
-        p2 = q1[3] * q2[:3] + q2[3] * q1[:3] + cs.cross(q1[:3], q2[:3])
-        return cs.vertcat(p2, p1)
+    def slerp(r1: "SO3", r2: "SO3", n: int) -> List["SO3"]:
+        """
+        Spherical linear interpolation between two rotations.
+
+        Args:
+            r1 (SO3): First quaternion
+            r2 (SO3): Second quaternion
+            n (Scalar): Number of interpolation steps
+
+        Returns:
+            List[SO3]: Interpolated rotations
+        """
+        q1 = r1.as_quat()
+        q2 = r2.as_quat()
+        interpolated_quats = Quaternion.slerp(q1, q2, n)
+        return [SO3(xyzw=q.coeffs()) for q in interpolated_quats]
 
 
 @dataclasses.dataclass
