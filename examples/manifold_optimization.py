@@ -5,6 +5,8 @@
 # conda install matplotlib scipy
 
 import casadi as cs
+import matplotlib
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation
@@ -25,13 +27,13 @@ dt = T / N
 for k in range(N):
     vector_SO3 = SO3Tangent(vel[k] * dt)
     rotation_SO3 = SO3(quat[k])
-    opti.subject_to(quat[k + 1] == (vector_SO3 + rotation_SO3).as_quat().coeffs())
+    opti.subject_to(quat[k + 1] == (vector_SO3 + rotation_SO3).as_quat())
 
 
 C = sum(cs.sumsqr(vel[i]) for i in range(N)) + T
 
 # Initial rotation and velocity
-opti.subject_to(quat[0] == SO3.Identity().as_quat().coeffs())
+opti.subject_to(quat[0] == SO3.Identity().as_quat())
 opti.subject_to(vel[0] == 0)
 opti.subject_to(opti.bounded(0, T, 10))
 
@@ -47,7 +49,7 @@ for k in range(N):
 opti.subject_to(vel[N - 1] == 0)
 final_delta_increment = SO3Tangent([cs.pi / 3, cs.pi / 6, cs.pi / 2])
 
-opti.subject_to(quat[N] == (final_delta_increment + SO3.Identity()).as_quat().coeffs())
+opti.subject_to(quat[N] == (final_delta_increment + SO3.Identity()).as_quat())
 
 opti.minimize(C)
 
@@ -71,7 +73,8 @@ plt.suptitle("Velocity")
 plt.plot(np.linspace(0, time, N), v)
 
 figure = plt.figure()
-axes = mplot3d.Axes3D(figure)
+axes = figure.add_subplot(projection="3d")
+
 x_cords = np.array([1, 0, 0])
 y_cords = np.array([0, 1, 0])
 z_cords = np.array([0, 0, 1])
