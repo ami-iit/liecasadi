@@ -14,6 +14,9 @@ from liecasadi.hints import Scalar, Vector
 class Quaternion:
     xyzw: Vector
 
+    def __getattr__(self, attr):
+        return getattr(self.xyzw, attr)
+
     def __repr__(self) -> str:
         return f"Quaternion: {self.xyzw}"
 
