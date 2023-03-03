@@ -88,7 +88,7 @@ class Quaternion:
         return self.conjugate() / cs.dot(self.xyzw, self.xyzw)
 
     @staticmethod
-    def slerp(q1: "Quaternion", q2: "Quaternion", n: Scalar) -> List[Vector]:
+    def slerp(q1: "Quaternion", q2: "Quaternion", n: Scalar) -> List["Quaternion"]:
         """Spherical linear interpolation between two quaternions
         check https://en.wikipedia.org/wiki/Slerp for more details
 
@@ -98,11 +98,11 @@ class Quaternion:
             n (Scalar): Number of interpolation steps
 
         Returns:
-            Quaternion: Interpolated quaternion
+            List[Quaternion]: Interpolated quaternion
         """
         q1 = q1.coeffs()
         q2 = q2.coeffs()
-        return [Quaternion.slerp_step(q1, q2, t) for t in cs.np.linspace(0, 1, n + 1)]
+        return [Quaternion.slerp_step(q1, q2, t) for t in cs.np.linspace(0, 1, n)]
 
     @staticmethod
     def slerp_step(q1: Vector, q2: Vector, t: Scalar) -> Vector:
@@ -119,4 +119,6 @@ class Quaternion:
 
         dot = cs.dot(q1, q2)
         angle = cs.acos(dot)
-        return (cs.sin((1.0 - t) * angle) * q1 + cs.sin(t * angle) * q2) / cs.sin(angle)
+        return Quaternion(
+            (cs.sin((1.0 - t) * angle) * q1 + cs.sin(t * angle) * q2) / cs.sin(angle)
+        )
