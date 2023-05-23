@@ -118,6 +118,21 @@ class DualQuaternion:
         qd = 0.5 * (t * r).coeffs()
         return DualQuaternion(qr=r.coeffs(), qd=qd)
 
+    @staticmethod
+    def from_SE3(se3: SE3) -> "DualQuaternion":
+        """Build dual quaternion from an SE3 object
+
+        Args:
+            se3 (SE3): an SE3 object
+
+        Returns:
+            DualQuaternion: a dual quaternion
+        """
+        r = se3.rotation().as_quat()
+        t = Quaternion(cs.vertcat(se3.translation(), 0))
+        qd = 0.5 * (t * r).coeffs()
+        return DualQuaternion(qr=r.coeffs(), qd=qd)
+
     def coeffs(self) -> Vector:
         """
         Returns:
@@ -185,7 +200,7 @@ class DualQuaternion:
             DualQuaternion: the identity dual quaternion
         """
         return DualQuaternion(
-            qr=SO3.Identity().as_quat().coeffs(), qd=Quaternion([0, 0, 0, 0]).coeffs()
+            qr=SO3.Identity().as_quat().coeffs(), qd=Quaternion(cs.DM.zeros(4)).coeffs()
         )
 
     def transform_point(self, xyz: Vector) -> Vector:
@@ -197,5 +212,6 @@ class DualQuaternion:
             Vector: the transformed point
         """
         p = DualQuaternion.Identity()
-        p.Qd = Quaternion([xyz[0], xyz[1], xyz[2], 0])
+        xyzw = cs.vertcat(xyz[0], xyz[1], xyz[2], 0)
+        p.Qd = Quaternion(xyzw)
         return (self * p * self.dual_conjugate()).coeffs()[:3]
