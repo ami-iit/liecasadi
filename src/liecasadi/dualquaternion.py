@@ -118,6 +118,21 @@ class DualQuaternion:
         qd = 0.5 * (t * r).coeffs()
         return DualQuaternion(qr=r.coeffs(), qd=qd)
 
+    @staticmethod
+    def from_SE3(se3: SE3) -> "DualQuaternion":
+        """Build dual quaternion from an SE3 object
+
+        Args:
+            se3 (SE3): an SE3 object
+
+        Returns:
+            DualQuaternion: a dual quaternion
+        """
+        r = se3.rotation().as_quat()
+        t = Quaternion(cs.vertcat(se3.translation(), 0))
+        qd = 0.5 * (t * r).coeffs()
+        return DualQuaternion(qr=r.coeffs(), qd=qd)
+
     def coeffs(self) -> Vector:
         """
         Returns:

@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import casadi as cs
 
 from liecasadi import SE3, DualQuaternion
 
@@ -21,6 +22,7 @@ H2 = SE3.from_position_quaternion(pos2, quat2).as_matrix()
 dual_q1 = DualQuaternion.from_matrix(H1)
 dual_q2 = DualQuaternion.from_matrix(H2)
 
+dual_q_from_se3 = DualQuaternion.from_SE3(SE3.from_position_quaternion(pos, quat))
 
 def test_concatenation():
     concat_dual_q = dual_q1 * dual_q2
@@ -54,3 +56,6 @@ def test_inverse():
     assert dual_q1.inverse().as_matrix() - np.linalg.inv(H1) == pytest.approx(
         0.0, abs=1e-4
     )
+
+def test_from_SE3():
+    assert dual_q_from_se3.as_matrix() - H1 == pytest.approx(0.0, abs=1e-4)
