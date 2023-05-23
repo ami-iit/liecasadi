@@ -185,7 +185,7 @@ class DualQuaternion:
             DualQuaternion: the identity dual quaternion
         """
         return DualQuaternion(
-            qr=SO3.Identity().as_quat().coeffs(), qd=Quaternion([0, 0, 0, 0]).coeffs()
+            qr=SO3.Identity().as_quat().coeffs(), qd=Quaternion(cs.DM.zeros(4)).coeffs()
         )
 
     def transform_point(self, xyz: Vector) -> Vector:
@@ -197,5 +197,6 @@ class DualQuaternion:
             Vector: the transformed point
         """
         p = DualQuaternion.Identity()
-        p.Qd = Quaternion([xyz[0], xyz[1], xyz[2], 0])
+        xyzw = cs.vertcat(xyz[0], xyz[1], xyz[2], 0)
+        p.Qd = Quaternion(xyzw)
         return (self * p * self.dual_conjugate()).coeffs()[:3]
