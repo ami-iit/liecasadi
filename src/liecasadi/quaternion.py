@@ -122,6 +122,12 @@ class Quaternion:
 
         dot = cs.dot(q1, q2)
         angle = cs.acos(dot)
+        # if the angle is small (meaning the quaternions are "equal") we return the first quaternion
         return Quaternion(
-            (cs.sin((1.0 - t) * angle) * q1 + cs.sin(t * angle) * q2) / cs.sin(angle)
+            cs.if_else(
+                angle < 1e-6,
+                q1,
+                (cs.sin((1.0 - t) * angle) * q1 + cs.sin(t * angle) * q2)
+                / cs.sin(angle),
+            )
         )
