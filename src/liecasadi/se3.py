@@ -48,7 +48,7 @@ class SE3:
             cs.horzcat(R, cs.skew(p) @ R), cs.horzcat(np.zeros((3, 3)), R)
         )
 
-    def as_adjoint_transform_wrench(self) -> Matrix:
+    def as_coadjoint_transform(self) -> Matrix:
         R = SO3(self.xyzw).as_matrix()
         p = self.pos
         return cs.vertcat(
