@@ -41,6 +41,20 @@ class SE3:
             cs.horzcat([0, 0, 0, 1]).T,
         )
 
+    def as_adjoint_transform(self) -> Matrix:
+        R = SO3(self.xyzw).as_matrix()
+        p = self.pos
+        return cs.vertcat(
+            cs.horzcat(R, cs.skew(p) @ R), cs.horzcat(np.zeros((3, 3)), R)
+        )
+
+    def as_coadjoint_transform(self) -> Matrix:
+        R = SO3(self.xyzw).as_matrix()
+        p = self.pos
+        return cs.vertcat(
+            cs.horzcat(R, np.zeros((3, 3))), cs.horzcat(cs.skew(p) @ R, R)
+        )
+
     @staticmethod
     def from_position_quaternion(xyz: Vector, xyzw: Vector) -> "SE3":
         assert xyz.shape in [(3,), (3, 1)]
