@@ -55,6 +55,9 @@ class SO3:
 
     @staticmethod
     def from_rotation_vector(rotation_vector: Vector) -> "SO3":
+        """From a rotation vector to a SO3 object.
+        See: https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Rotation_vector
+        """
         angle = cs.norm_2(rotation_vector)
         axis = rotation_vector / angle
         return SO3.from_axis_angle(axis, angle)
