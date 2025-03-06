@@ -4,13 +4,13 @@
 
 import dataclasses
 from dataclasses import field
-from typing import Union, List
+from typing import List, Union
 
 import casadi as cs
 import numpy as np
 
 from liecasadi import Quaternion
-from liecasadi.hints import Angle, Matrix, TangentVector, Vector
+from liecasadi.hints import Angle, Matrix, Scalar, TangentVector, Vector
 
 
 @dataclasses.dataclass
@@ -47,6 +47,17 @@ class SO3:
         qy = 0.5 * cs.sign(m[0, 2] - m[2, 0]) * cs.sqrt(m[1, 1] - m[2, 2] - m[0, 0] + 1)
         qz = 0.5 * cs.sign(m[1, 0] - m[0, 1]) * cs.sqrt(m[2, 2] - m[0, 0] - m[1, 1] + 1)
         return SO3(xyzw=cs.vertcat(qx, qy, qz, qw))
+
+    @staticmethod
+    def from_axis_angle(axis: Vector, angle: Scalar) -> "SO3":
+        axis = axis / cs.norm_2(axis)
+        return SO3(xyzw=cs.vertcat(axis * cs.sin(angle / 2), cs.cos(angle / 2)))
+
+    @staticmethod
+    def from_rotation_vector(rotation_vector: Vector) -> "SO3":
+        angle = cs.norm_2(rotation_vector)
+        axis = rotation_vector / angle
+        return SO3.from_axis_angle(axis, angle)
 
     def as_quat(self) -> Quaternion:
         return self.quat
