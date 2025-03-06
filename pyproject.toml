@@ -19,7 +19,7 @@ keywords = [
   "lie-groups",
   "manifolds",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = ["numpy>=1.21", "casadi"]
 
 [project.optional-dependencies]
