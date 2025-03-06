@@ -1,6 +1,7 @@
 import manifpy
 import numpy as np
 import pytest
+from scipy.spatial.transform import Rotation
 
 from liecasadi import SE3, SO3, SE3Tangent, SO3Tangent
 
@@ -26,8 +27,6 @@ def test_SO3():
 
 
 def test_euler():
-    from scipy.spatial.transform import Rotation
-
     rpy = np.random.randn(3) * np.pi
     assert SO3.from_euler(rpy).as_matrix() - Rotation.from_euler(
         "xyz", rpy
@@ -48,6 +47,12 @@ def test_log():
         mySO3.log().exp().as_matrix() - manifSO3.log().exp().rotation()
         == pytest.approx(0.0, abs=1e-4)
     )
+
+def test_rotation_vector():
+    rotation_vector = (np.random.rand(3) - 0.5) * 5
+    assert SO3.from_rotation_vector(rotation_vector).as_matrix() - Rotation.from_rotvec(
+        rotation_vector
+    ).as_matrix() == pytest.approx(0.0, abs=1e-4)
 
 
 def test_inv():
