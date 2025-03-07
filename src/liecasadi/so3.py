@@ -1,10 +1,7 @@
-# Copyright (C) 2021 Istituto Italiano di Tecnologia (IIT). All rights reserved.
-# This software may be modified and distributed under the terms of the
-# GNU Lesser General Public License v2.1 or any later version.
+# Copyright (C) Istituto Italiano di Tecnologia (IIT). All rights reserved.
 
 import dataclasses
 from dataclasses import field
-from typing import List, Union
 
 import casadi as cs
 import numpy as np
@@ -128,7 +125,7 @@ class SO3:
         self,
         omega: Vector,
         omega_in_body_fixed: bool = False,
-        baumgarte_coefficient: Union[float, None] = None,
+        baumgarte_coefficient: float | None = None,
     ):
         if baumgarte_coefficient is not None:
             baumgarte_term = (
@@ -152,7 +149,7 @@ class SO3:
         ).coeffs()
 
     @staticmethod
-    def slerp(r1: "SO3", r2: "SO3", n: int) -> List["SO3"]:
+    def slerp(r1: "SO3", r2: "SO3", n: int) -> list["SO3"]:
         """
         Spherical linear interpolation between two rotations.
 
@@ -162,7 +159,7 @@ class SO3:
             n (Scalar): Number of interpolation steps
 
         Returns:
-            List[SO3]: Interpolated rotations
+            list[SO3]: Interpolated rotations
         """
         q1 = r1.as_quat()
         q2 = r2.as_quat()

@@ -1,10 +1,32 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [
-  "wheel",
-  "setuptools>=45",
-  "setuptools_scm[toml]>=6.0",
+requires = ["wheel", "setuptools>=64", "setuptools_scm[toml]>=8"]
+
+[project]
+name = "liecasadi"
+dynamic = ["version"]
+description = "Rigid transform using Lie groups, written in CasADi!"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Giuseppe L'Erario", email = "gl.giuseppelerario@gmail.com" },
 ]
+keywords = [
+  "robotics",
+  "automatic-differentiation",
+  "optimization",
+  "casadi",
+  "lie-groups",
+  "manifolds",
+]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.21", "casadi"]
+
+[project.optional-dependencies]
+test = ["pytest", "manifpy", "scipy"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
 
 [tool.setuptools_scm]
 local_scheme = "dirty-tag"

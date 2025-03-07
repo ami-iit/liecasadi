@@ -1,9 +1,6 @@
-# Copyright (C) 2021 Istituto Italiano di Tecnologia (IIT). All rights reserved.
-# This software may be modified and distributed under the terms of the
-# GNU Lesser General Public License v2.1 or any later version.
+# Copyright (C) Istituto Italiano di Tecnologia (IIT). All rights reserved.
 
 import dataclasses
-from typing import List
 
 import casadi as cs
 
@@ -91,7 +88,7 @@ class Quaternion:
         return self.conjugate() / cs.dot(self.xyzw, self.xyzw)
 
     @staticmethod
-    def slerp(q1: "Quaternion", q2: "Quaternion", n: Scalar) -> List["Quaternion"]:
+    def slerp(q1: "Quaternion", q2: "Quaternion", n: Scalar) -> list["Quaternion"]:
         """Spherical linear interpolation between two quaternions
         check https://en.wikipedia.org/wiki/Slerp for more details
 
@@ -101,7 +98,7 @@ class Quaternion:
             n (Scalar): Number of interpolation steps
 
         Returns:
-            List[Quaternion]: Interpolated quaternion
+            list[Quaternion]: Interpolated quaternion
         """
         q1 = q1.coeffs()
         q2 = q2.coeffs()
