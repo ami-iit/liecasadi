@@ -27,12 +27,14 @@ class SO3:
 
     @staticmethod
     def from_quat(xyzw: Vector) -> "SO3":
-        assert xyzw.shape == (4, 1) or (4,)
+        if xyzw.shape not in [(4, 1), (4,)]:
+            raise ValueError("xyzw must have shape (4, 1) or (4,)")
         return SO3(xyzw=xyzw)
 
     @staticmethod
     def from_euler(rpy: Vector) -> "SO3":
-        assert rpy.shape == (3,) or (3, 1)
+        if rpy.shape not in [(3,), (3, 1)]:
+            raise ValueError("rpy must have shape (3,) or (3, 1)")
         return SO3.q_from_rpy(rpy)
 
     @staticmethod
