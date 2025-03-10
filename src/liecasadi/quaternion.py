@@ -9,6 +9,7 @@ from liecasadi.hints import Scalar, Vector
 
 @dataclasses.dataclass
 class Quaternion:
+    """Class for quaternions in the form [x, y, z, w]"""
     xyzw: Vector
 
     def __getattr__(self, attr):
