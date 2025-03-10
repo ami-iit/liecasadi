@@ -283,16 +283,22 @@ class SE3:
 
 @dataclasses.dataclass
 class SE3Tangent:
+    """Class representing the tangent space of the Special Euclidean group SE(3)"""
     vec: Vector
 
     def __repr__(self) -> str:
         return f"Tangent vector: {self.vec}"
 
-    def exp(self):
+    def exp(self) -> SE3:
+        """Exponential map of the SE3 tangent vector
+
+        Returns:
+            SE3: SE3 object
+        """
         assert self.vec.shape in [(6,), (6, 1)]
         vec = cs.reshape(self.vec, -1, 1)
         rot = SO3Tangent(vec[3:]).exp()
-        # theta = cs.norm_2(vec[3:])
+        # theta = cs.norm_2(vec[3:]) # norm_2 is not differentiable at 0
         theta_eps = cs.norm_2(vec[3:] + cs.np.finfo(np.float64).eps)
         u = vec[3:] / theta_eps
         V = (
@@ -303,5 +309,18 @@ class SE3Tangent:
         trans = V @ vec[:3]
         return SE3(pos=trans, xyzw=rot.as_quat().coeffs())
 
-    def vector(self):
+    def vector(self) -> Vector:
+        """Return the tangent vector value
+
+        Returns:
+            Vector: Tangent vector value
+        """
+        return self.vec
+
+    def value(self) -> Vector:
+        """Return the tangent vector value
+
+        Returns:
+            Vector: Tangent vector value
+        """
         return self.vec
