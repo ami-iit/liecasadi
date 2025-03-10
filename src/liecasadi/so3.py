@@ -12,8 +12,7 @@ from liecasadi.hints import Angle, Matrix, Scalar, TangentVector, Vector
 
 @dataclasses.dataclass
 class SO3:
-    """Class to represent the Special Orthogonal Group in 3D.
-    """
+    """Class to represent the Special Orthogonal Group in 3D."""
     xyzw: Vector
     quat: Quaternion = field(init=False)
 
@@ -331,12 +330,18 @@ class SO3:
 
 @dataclasses.dataclass
 class SO3Tangent:
+    """Class to represent the tangent space of the Special Orthogonal Group in 3D."""
     vec: TangentVector
 
     def __repr__(self) -> str:
         return f"SO3Tangent vector:{str(self.vec)}"
 
     def exp(self) -> SO3:
+        """Get the SO3 object representation of the tangent vector via the exponential map.
+
+        Returns:
+            SO3: SO3 object representation
+        """
         theta = cs.norm_2(self.vec + cs.np.finfo(np.float64).eps)
 
         def exact(self):
@@ -355,20 +360,50 @@ class SO3Tangent:
 
         return exact(self)
 
-    def __add__(self, other):
+    def __add__(self, other: SO3) -> SO3:
+        """Add a SO3 object to the tangent vector and get the SO3 object representation via the exponential map.
+
+        Args:
+            other (SO3): SO3 object
+
+        Raises:
+            RuntimeError: If the input is not an SO3 object
+
+        Returns:
+            SO3: The sum of the SO3 object and the tangent
+        """
         if type(other) is SO3:
             return self.exp() * other
         else:
-            raise RuntimeError("[SO3: __add__] Hey! Someone is not a Lie element.")
+            raise RuntimeError("[SO3: __add__] Hey! Please add an SO3 object.")
 
-    def __radd__(self, other):
+    def __radd__(self, other : SO3) -> SO3:
         if type(other) is SO3:
             return other * self.exp()
         else:
-            raise RuntimeError("[SO3: __add__] Hey! Someone is not a Lie element.")
+            raise RuntimeError("[SO3: __radd__] Hey! Please add an SO3 object.")
 
-    def __mul__(self, other):
+    def __mul__(self, other: Scalar) -> "SO3Tangent":
+        """Multiply the tangent vector with a scalar
+
+        Args:
+            other (Scalar): Scalar
+
+        Raises:
+            RuntimeError: If the input is not a scalar
+
+        Returns:
+            SO3Tangent: The product of the tangent vector and the scalar
+        """
         if type(other) is float:
             return SO3Tangent(vec=self.vec * other)
         else:
-            raise RuntimeError("[SO3: __add__] Hey! Someone is not a Lie element.")
+            raise RuntimeError("[SO3: __mul__] Hey! Please multiply with a scalar.")
+
+    def value(self) -> TangentVector:
+        """Get the value of the tangent vector.
+
+        Returns:
+            TangentVector: Tangent vector
+        """
+        return self.vec
