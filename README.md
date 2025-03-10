@@ -12,7 +12,7 @@ Inspired by [A micro Lie theory for state estimation in robotics](https://arxiv.
 
 Create a [conda environment](https://github.com/robotology/robotology-superbuild/blob/master/doc/conda-forge.md)
 ```
-conda crate -n liecasadienv
+conda create -n liecasadienv
 ```
 and install the library 
 ```
