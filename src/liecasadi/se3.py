@@ -88,7 +88,7 @@ class SE3:
         return SE3(pos=position, xyzw=rotation.as_quat().coeffs())
 
     def __rmul__(self, other):
-        rotation = SO3(other.xyzw) @ SO3(self.xyzw)
+        rotation = SO3(other.xyzw) * SO3(self.xyzw)
         position = other.pos + SO3(other.xyzw).act(self.pos)
         return SE3(pos=position, xyzw=rotation.as_quat().coeffs())
 
@@ -106,8 +106,8 @@ class SE3:
 
 
 @dataclasses.dataclass
-class SE3Tangent(SO3Tangent):
-    vec = Vector
+class SE3Tangent:
+    vec: Vector
 
     def __repr__(self) -> str:
         return f"Tangent vector: {self.vec}"
