@@ -8,6 +8,18 @@ Inspired by [A micro Lie theory for state estimation in robotics](https://arxiv.
 
 ## 🐍 Install
 
+### Conda
+
+Create a [conda environment](https://github.com/robotology/robotology-superbuild/blob/master/doc/conda-forge.md)
+```
+conda crate -n liecasadienv
+```
+and install the library 
+```
+conda install liecasadi
+```
+
+### Pip
 Create a [virtual environment](https://docs.python.org/3/library/venv.html#venv-def), if you prefer. For example:
 
 ```bash
