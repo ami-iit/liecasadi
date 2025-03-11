@@ -178,6 +178,17 @@ class SE3:
         """
         return SE3(pos=translation, xyzw=rotation.as_quat().coeffs())
 
+    @staticmethod
+    def Identity() -> "SE3":
+        """Create an identity SE3 object
+
+        Returns:
+            SE3: Identity SE3 object
+        """
+        return SE3.from_translation_and_rotation(
+            translation=cs.DM.zeros(3, 1), rotation=SO3.Identity()
+        )
+
     def inverse(self) -> "SE3":
         """Return the inverse of the SE3 object
 
